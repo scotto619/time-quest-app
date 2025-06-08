@@ -17,10 +17,8 @@ class UIManager {
         this.activeModals = [];
         this.mascotSpeechTimeout = null;
         
-        // Bind methods to preserve 'this' context
-        this.handleScreenTransition = this.handleScreenTransition.bind(this);
+        // FIXED: Only bind methods that actually exist
         this.handleButtonClick = this.handleButtonClick.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
         
         console.log('🎭 UI Manager initialized');
     }
@@ -58,7 +56,7 @@ class UIManager {
         });
         
         // Prevent context menu on touch devices for better UX
-        if (TimeQuestUtils.isTouchDevice()) {
+        if (TimeQuestUtils && TimeQuestUtils.isTouchDevice()) {
             document.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
             });
@@ -97,12 +95,12 @@ class UIManager {
         };
         
         Object.entries(menuButtons).forEach(([buttonId, handler]) => {
-            const button = TimeQuestUtils.getElement(buttonId);
+            const button = this.getElement(buttonId);
             if (button) {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    TimeQuestUtils.animateElement(button, 'button-bounce');
-                    TimeQuestUtils.playSound('button-click', 0.4);
+                    this.animateElement(button, 'button-bounce');
+                    this.playSound('button-click', 0.4);
                     handler();
                 });
             }
@@ -120,7 +118,7 @@ class UIManager {
         };
         
         Object.entries(tutorialButtons).forEach(([buttonId, handler]) => {
-            const button = TimeQuestUtils.getElement(buttonId);
+            const button = this.getElement(buttonId);
             if (button) {
                 button.addEventListener('click', handler);
             }
@@ -136,7 +134,7 @@ class UIManager {
         };
         
         Object.entries(practiceButtons).forEach(([buttonId, handler]) => {
-            const button = TimeQuestUtils.getElement(buttonId);
+            const button = this.getElement(buttonId);
             if (button) {
                 button.addEventListener('click', handler);
             }
@@ -152,7 +150,7 @@ class UIManager {
         };
         
         Object.entries(gameButtons).forEach(([buttonId, handler]) => {
-            const button = TimeQuestUtils.getElement(buttonId);
+            const button = this.getElement(buttonId);
             if (button) {
                 button.addEventListener('click', handler);
             }
@@ -169,7 +167,7 @@ class UIManager {
         };
         
         Object.entries(settingsButtons).forEach(([buttonId, handler]) => {
-            const button = TimeQuestUtils.getElement(buttonId);
+            const button = this.getElement(buttonId);
             if (button) {
                 button.addEventListener('click', handler);
             }
@@ -184,19 +182,23 @@ class UIManager {
      */
     initializeSettingsControls() {
         // Sound effects toggle
-        const soundToggle = TimeQuestUtils.getElement('sound-effects-toggle');
+        const soundToggle = this.getElement('sound-effects-toggle');
         if (soundToggle) {
             soundToggle.addEventListener('change', (e) => {
-                TimeQuestStorage.updateSettings({ soundEffects: e.target.checked });
+                if (window.TimeQuestStorage) {
+                    TimeQuestStorage.updateSettings({ soundEffects: e.target.checked });
+                }
                 this.mascotSay(e.target.checked ? "Sound effects on! 🔊" : "Sound effects off 🔇");
             });
         }
         
         // Background music toggle
-        const musicToggle = TimeQuestUtils.getElement('background-music-toggle');
+        const musicToggle = this.getElement('background-music-toggle');
         if (musicToggle) {
             musicToggle.addEventListener('change', (e) => {
-                TimeQuestStorage.updateSettings({ backgroundMusic: e.target.checked });
+                if (window.TimeQuestStorage) {
+                    TimeQuestStorage.updateSettings({ backgroundMusic: e.target.checked });
+                }
                 if (window.TimeQuestAudio) {
                     if (e.target.checked) {
                         window.TimeQuestAudio.playBackgroundMusic();
@@ -208,27 +210,33 @@ class UIManager {
         }
         
         // Voice narration toggle
-        const voiceToggle = TimeQuestUtils.getElement('voice-narration-toggle');
+        const voiceToggle = this.getElement('voice-narration-toggle');
         if (voiceToggle) {
             voiceToggle.addEventListener('change', (e) => {
-                TimeQuestStorage.updateSettings({ voiceNarration: e.target.checked });
+                if (window.TimeQuestStorage) {
+                    TimeQuestStorage.updateSettings({ voiceNarration: e.target.checked });
+                }
             });
         }
         
         // Text size selector
-        const textSizeSelect = TimeQuestUtils.getElement('text-size-select');
+        const textSizeSelect = this.getElement('text-size-select');
         if (textSizeSelect) {
             textSizeSelect.addEventListener('change', (e) => {
-                TimeQuestStorage.updateSettings({ textSize: e.target.value });
+                if (window.TimeQuestStorage) {
+                    TimeQuestStorage.updateSettings({ textSize: e.target.value });
+                }
                 this.applyTextSize(e.target.value);
             });
         }
         
         // Color theme selector
-        const themeSelect = TimeQuestUtils.getElement('color-theme-select');
+        const themeSelect = this.getElement('color-theme-select');
         if (themeSelect) {
             themeSelect.addEventListener('change', (e) => {
-                TimeQuestStorage.updateSettings({ colorTheme: e.target.value });
+                if (window.TimeQuestStorage) {
+                    TimeQuestStorage.updateSettings({ colorTheme: e.target.value });
+                }
                 this.applyColorTheme(e.target.value);
             });
         }
@@ -238,7 +246,7 @@ class UIManager {
      * Initialize mascot interactions
      */
     initializeMascot() {
-        const mascot = TimeQuestUtils.getElement('time-traveler-tim');
+        const mascot = this.getElement('time-traveler-tim');
         if (mascot) {
             mascot.addEventListener('click', () => {
                 this.mascotInteraction();
@@ -257,7 +265,7 @@ class UIManager {
         this.handleResize();
         
         // Touch-specific adjustments
-        if (TimeQuestUtils.isTouchDevice()) {
+        if (window.TimeQuestUtils && TimeQuestUtils.isTouchDevice()) {
             document.body.classList.add('touch-device');
         }
     }
@@ -271,7 +279,7 @@ class UIManager {
             this.hideLoadingScreen();
             
             // Show appropriate starting screen
-            const currentProfile = TimeQuestStorage.getCurrentProfile();
+            const currentProfile = window.TimeQuestStorage ? TimeQuestStorage.getCurrentProfile() : null;
             if (currentProfile) {
                 this.showScreen('main-menu');
                 this.mascotSay(`Welcome back, ${currentProfile.name}! Ready for more time adventures?`);
@@ -291,14 +299,11 @@ class UIManager {
         
         // Add click animation to all buttons
         if (button.tagName === 'BUTTON') {
-            TimeQuestUtils.animateElement(button, 'button-bounce');
+            this.animateElement(button, 'button-bounce');
         }
         
         // Play click sound
-        const settings = TimeQuestStorage.getSettings();
-        if (settings.soundEffects) {
-            TimeQuestUtils.playSound('button-click', 0.3);
-        }
+        this.playSound('button-click', 0.3);
     }
     
     /**
@@ -310,7 +315,7 @@ class UIManager {
             return;
         }
         
-        const newScreen = TimeQuestUtils.getElement(screenId);
+        const newScreen = this.getElement(screenId);
         if (!newScreen) {
             console.error(`Screen ${screenId} not found`);
             return;
@@ -339,12 +344,12 @@ class UIManager {
      * Hide a screen with animation
      */
     hideScreen(screenId, transition) {
-        const screen = TimeQuestUtils.getElement(screenId);
+        const screen = this.getElement(screenId);
         if (!screen) return;
         
         const animationClass = transition === 'slide' ? 'screen-slide-out-left' : 'screen-fade-out';
-        TimeQuestUtils.animateElement(screen, animationClass, () => {
-            TimeQuestUtils.removeClass(screen, 'active');
+        this.animateElement(screen, animationClass, () => {
+            this.removeClass(screen, 'active');
         });
     }
     
@@ -352,10 +357,10 @@ class UIManager {
      * Display a screen with animation
      */
     displayScreen(screen, transition) {
-        TimeQuestUtils.addClass(screen, 'active');
+        this.addClass(screen, 'active');
         
         const animationClass = transition === 'slide' ? 'screen-slide-in-right' : 'screen-fade-in';
-        TimeQuestUtils.animateElement(screen, animationClass);
+        this.animateElement(screen, animationClass);
     }
     
     /**
@@ -385,10 +390,10 @@ class UIManager {
      * Hide the loading screen
      */
     hideLoadingScreen() {
-        const loadingScreen = TimeQuestUtils.getElement('loading-screen');
+        const loadingScreen = this.getElement('loading-screen');
         if (loadingScreen) {
-            TimeQuestUtils.animateElement(loadingScreen, 'screen-fade-out', () => {
-                TimeQuestUtils.removeClass(loadingScreen, 'active');
+            this.animateElement(loadingScreen, 'screen-fade-out', () => {
+                this.removeClass(loadingScreen, 'active');
             });
         }
     }
@@ -397,7 +402,7 @@ class UIManager {
      * Start a new adventure
      */
     startNewAdventure() {
-        const profile = TimeQuestStorage.getCurrentProfile();
+        const profile = window.TimeQuestStorage ? TimeQuestStorage.getCurrentProfile() : null;
         if (!profile) {
             this.showCreateProfileModal();
             return;
@@ -411,14 +416,14 @@ class UIManager {
      * Continue an existing journey
      */
     continueJourney() {
-        const profile = TimeQuestStorage.getCurrentProfile();
+        const profile = window.TimeQuestStorage ? TimeQuestStorage.getCurrentProfile() : null;
         if (!profile) {
             this.mascotSay("You need to create a profile first!");
             this.showCreateProfileModal();
             return;
         }
         
-        if (profile.lessonsCompleted.length === 0) {
+        if (profile.lessonsCompleted && profile.lessonsCompleted.length === 0) {
             this.mascotSay("Let's start with the first lesson!");
             this.showScreen('tutorial-mode');
         } else {
@@ -430,11 +435,11 @@ class UIManager {
      * Refresh main menu display
      */
     refreshMainMenu() {
-        const profile = TimeQuestStorage.getCurrentProfile();
-        const continueButton = TimeQuestUtils.getElement('continue-journey-btn');
+        const profile = window.TimeQuestStorage ? TimeQuestStorage.getCurrentProfile() : null;
+        const continueButton = this.getElement('continue-journey-btn');
         
         if (profile && continueButton) {
-            if (profile.lessonsCompleted.length > 0) {
+            if (profile.lessonsCompleted && profile.lessonsCompleted.length > 0) {
                 continueButton.style.display = 'flex';
                 this.updateButtonText(continueButton, `Continue ${profile.name}'s Journey`);
             } else {
@@ -490,7 +495,7 @@ class UIManager {
      * Refresh settings display
      */
     refreshSettings() {
-        const settings = TimeQuestStorage.getSettings();
+        const settings = window.TimeQuestStorage ? TimeQuestStorage.getSettings() : {};
         
         // Update toggle states
         this.updateToggle('sound-effects-toggle', settings.soundEffects);
@@ -509,7 +514,7 @@ class UIManager {
      * Update toggle switch state
      */
     updateToggle(toggleId, checked) {
-        const toggle = TimeQuestUtils.getElement(toggleId);
+        const toggle = this.getElement(toggleId);
         if (toggle) {
             toggle.checked = checked;
         }
@@ -519,7 +524,7 @@ class UIManager {
      * Update select element value
      */
     updateSelect(selectId, value) {
-        const select = TimeQuestUtils.getElement(selectId);
+        const select = this.getElement(selectId);
         if (select) {
             select.value = value;
         }
@@ -529,8 +534,8 @@ class UIManager {
      * Refresh the profile list in settings
      */
     refreshProfileList() {
-        const profileList = TimeQuestUtils.getElement('profile-list');
-        if (!profileList) return;
+        const profileList = this.getElement('profile-list');
+        if (!profileList || !window.TimeQuestStorage) return;
         
         const profiles = TimeQuestStorage.getAllProfiles();
         const currentProfileId = TimeQuestStorage.getCurrentProfileId();
@@ -556,7 +561,7 @@ class UIManager {
                 <span class="profile-avatar">${profile.avatar}</span>
                 <div class="profile-details">
                     <span class="profile-name">${profile.name}</span>
-                    <span class="profile-stats">Level ${profile.currentLevel} • ${profile.totalStars} stars</span>
+                    <span class="profile-stats">Level ${profile.currentLevel || 1} • ${profile.totalStars || 0} stars</span>
                 </div>
             </div>
             <div class="profile-actions">
@@ -572,17 +577,21 @@ class UIManager {
      * Switch to a different profile
      */
     switchToProfile(profileId) {
-        TimeQuestStorage.setCurrentProfile(profileId);
-        const profile = TimeQuestStorage.getProfile(profileId);
-        this.mascotSay(`Welcome, ${profile.name}!`);
-        this.refreshSettings();
-        this.refreshMainMenu();
+        if (window.TimeQuestStorage) {
+            TimeQuestStorage.setCurrentProfile(profileId);
+            const profile = TimeQuestStorage.getProfile(profileId);
+            this.mascotSay(`Welcome, ${profile.name}!`);
+            this.refreshSettings();
+            this.refreshMainMenu();
+        }
     }
     
     /**
      * Delete a profile with confirmation
      */
     deleteProfile(profileId) {
+        if (!window.TimeQuestStorage) return;
+        
         const profile = TimeQuestStorage.getProfile(profileId);
         if (!profile) return;
         
@@ -662,6 +671,11 @@ class UIManager {
             return;
         }
         
+        if (!window.TimeQuestStorage) {
+            this.showError('Storage not available');
+            return;
+        }
+        
         try {
             const profile = TimeQuestStorage.createProfile(name, avatar);
             TimeQuestStorage.setCurrentProfile(profile.id);
@@ -721,16 +735,18 @@ class UIManager {
      */
     handleResize() {
         // Adjust layout for different screen sizes
-        if (TimeQuestUtils.isMobileSize()) {
-            document.body.classList.add('mobile-layout');
-        } else {
-            document.body.classList.remove('mobile-layout');
-        }
-        
-        if (TimeQuestUtils.isTabletSize()) {
-            document.body.classList.add('tablet-layout');
-        } else {
-            document.body.classList.remove('tablet-layout');
+        if (window.TimeQuestUtils) {
+            if (TimeQuestUtils.isMobileSize()) {
+                document.body.classList.add('mobile-layout');
+            } else {
+                document.body.classList.remove('mobile-layout');
+            }
+            
+            if (TimeQuestUtils.isTabletSize()) {
+                document.body.classList.add('tablet-layout');
+            } else {
+                document.body.classList.remove('tablet-layout');
+            }
         }
     }
     
@@ -742,8 +758,8 @@ class UIManager {
      * Make the mascot say something
      */
     mascotSay(message, duration = 3000) {
-        const speechBubble = TimeQuestUtils.getElement('mascot-speech');
-        const mascot = TimeQuestUtils.getElement('time-traveler-tim');
+        const speechBubble = this.getElement('mascot-speech');
+        const mascot = this.getElement('time-traveler-tim');
         
         if (!speechBubble || !mascot) return;
         
@@ -754,14 +770,14 @@ class UIManager {
         
         // Update message and show
         speechBubble.textContent = message;
-        TimeQuestUtils.addClass(speechBubble, 'speech-bubble-pop');
+        this.addClass(speechBubble, 'speech-bubble-pop');
         
         // Animate mascot
-        TimeQuestUtils.animateElement(mascot, 'mascot-excited');
+        this.animateElement(mascot, 'mascot-excited');
         
         // Hide after duration
         this.mascotSpeechTimeout = setTimeout(() => {
-            TimeQuestUtils.removeClass(speechBubble, 'speech-bubble-pop');
+            this.removeClass(speechBubble, 'speech-bubble-pop');
         }, duration);
     }
     
@@ -779,18 +795,18 @@ class UIManager {
             "Time flies when you're having fun learning! 🦋"
         ];
         
-        const message = TimeQuestUtils.randomChoice(encouragements);
+        const message = this.randomChoice(encouragements);
         this.mascotSay(message);
         
-        const mascot = TimeQuestUtils.getElement('time-traveler-tim');
-        TimeQuestUtils.animateElement(mascot, 'mascot-encouraging');
+        const mascot = this.getElement('time-traveler-tim');
+        this.animateElement(mascot, 'mascot-encouraging');
     }
     
     /**
      * Schedule random mascot comments
      */
     scheduleRandomMascotComment() {
-        const delay = TimeQuestUtils.randomInt(30000, 60000); // 30-60 seconds
+        const delay = this.randomInt(30000, 60000); // 30-60 seconds
         
         setTimeout(() => {
             if (this.currentScreen === 'main-menu') {
@@ -800,7 +816,7 @@ class UIManager {
                     "What time is it? Adventure time! 🎮"
                 ];
                 
-                this.mascotSay(TimeQuestUtils.randomChoice(comments), 2000);
+                this.mascotSay(this.randomChoice(comments), 2000);
             }
             
             this.scheduleRandomMascotComment(); // Schedule next comment
@@ -841,7 +857,7 @@ class UIManager {
         this.activeModals.push(overlay);
         
         // Show with animation
-        TimeQuestUtils.animateElement(overlay, 'zoom-in');
+        this.animateElement(overlay, 'zoom-in');
         
         return overlay;
     }
@@ -866,38 +882,6 @@ class UIManager {
     }
     
     /**
-     * Close the top modal
-     */
-    closeTopModal() {
-        if (this.activeModals.length === 0) return;
-        
-        const modal = this.activeModals.pop();
-        TimeQuestUtils.animateElement(modal, 'fadeOut', () => {
-            document.body.removeChild(modal);
-        });
-    }
-    
-    /**
-     * Get the current top modal
-     */
-    getTopModal() {
-        return this.activeModals[this.activeModals.length - 1];
-    }
-    
-    /**
-     * Close all modals
-     */
-    closeAllModals() {
-        while (this.activeModals.length > 0) {
-            this.closeTopModal();
-        }
-    }
-    
-    // ===================================
-    // FEEDBACK AND NOTIFICATIONS
-    // ===================================
-    
-    /**
      * Show a success message with celebration
      */
     showSuccess(message, celebrate = true) {
@@ -919,14 +903,42 @@ class UIManager {
         document.body.appendChild(notification);
         
         // Show with animation
-        TimeQuestUtils.animateElement(notification, 'slide-in-bottom');
+        this.animateElement(notification, 'slide-in-bottom');
         
         // Remove after duration
         setTimeout(() => {
-            TimeQuestUtils.animateElement(notification, 'fadeOut', () => {
+            this.animateElement(notification, 'fadeOut', () => {
                 document.body.removeChild(notification);
             });
         }, duration);
+    }
+    
+    /**
+     * Close the top modal
+     */
+    closeTopModal() {
+        if (this.activeModals.length === 0) return;
+        
+        const modal = this.activeModals.pop();
+        this.animateElement(modal, 'fadeOut', () => {
+            document.body.removeChild(modal);
+        });
+    }
+    
+    /**
+     * Get the current top modal
+     */
+    getTopModal() {
+        return this.activeModals[this.activeModals.length - 1];
+    }
+    
+    /**
+     * Close all modals
+     */
+    closeAllModals() {
+        while (this.activeModals.length > 0) {
+            this.closeTopModal();
+        }
     }
     
     /**
@@ -934,12 +946,12 @@ class UIManager {
      */
     triggerCelebration() {
         // Play celebration sound
-        TimeQuestUtils.playSound('success-sound', 0.7);
+        this.playSound('success-sound', 0.7);
         
         // Mascot celebration
-        const mascot = TimeQuestUtils.getElement('time-traveler-tim');
+        const mascot = this.getElement('time-traveler-tim');
         if (mascot) {
-            TimeQuestUtils.animateElement(mascot, 'mascot-excited');
+            this.animateElement(mascot, 'mascot-excited');
         }
         
         // Create confetti effect
@@ -967,6 +979,58 @@ class UIManager {
         setTimeout(() => {
             document.body.removeChild(confettiContainer);
         }, 4000);
+    }
+    
+    // ===================================
+    // UTILITY METHODS (fallbacks for when TimeQuestUtils isn't loaded)
+    // ===================================
+    
+    getElement(id) {
+        return document.getElementById(id);
+    }
+    
+    addClass(element, className) {
+        if (element && element.classList) {
+            element.classList.add(className);
+        }
+    }
+    
+    removeClass(element, className) {
+        if (element && element.classList) {
+            element.classList.remove(className);
+        }
+    }
+    
+    animateElement(element, animationClass, callback) {
+        if (!element) return;
+        
+        // Add the animation class
+        this.addClass(element, animationClass);
+        
+        // Listen for animation to finish
+        const handleAnimationEnd = () => {
+            this.removeClass(element, animationClass);
+            element.removeEventListener('animationend', handleAnimationEnd);
+            if (callback) callback();
+        };
+        
+        element.addEventListener('animationend', handleAnimationEnd);
+    }
+    
+    playSound(soundId, volume = 1.0) {
+        if (window.TimeQuestUtils && TimeQuestUtils.playSound) {
+            TimeQuestUtils.playSound(soundId, volume);
+        }
+        // Silently fail if sound system not available
+    }
+    
+    randomChoice(array) {
+        if (array.length === 0) return null;
+        return array[Math.floor(Math.random() * array.length)];
+    }
+    
+    randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
 
