@@ -1,0 +1,617 @@
+/* ===================================
+   TIME QUEST - COMPONENTS CSS
+   Individual UI components and interactive elements
+   =================================== */
+
+/* ===================================
+   ANALOG CLOCK COMPONENT
+   The main interactive clock face
+   =================================== */
+
+.analog-clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: var(--spacing-lg) auto;
+  position: relative;
+}
+
+.clock-face {
+  width: 250px;
+  height: 250px;
+  border: 8px solid var(--primary-blue);
+  border-radius: var(--radius-circle);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  margin: var(--spacing-md);
+}
+
+/* Clock number markers */
+.hour-markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.marker {
+  position: absolute;
+  font-size: var(--font-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-white);
+  border: 2px solid var(--primary-blue);
+  border-radius: var(--radius-circle);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Position each hour marker */
+.hour-12 { top: 5px; left: 50%; transform: translateX(-50%); }
+.hour-1 { top: 20px; right: 25px; }
+.hour-2 { top: 50px; right: 10px; }
+.hour-3 { top: 50%; right: 5px; transform: translateY(-50%); }
+.hour-4 { bottom: 50px; right: 10px; }
+.hour-5 { bottom: 20px; right: 25px; }
+.hour-6 { bottom: 5px; left: 50%; transform: translateX(-50%); }
+.hour-7 { bottom: 20px; left: 25px; }
+.hour-8 { bottom: 50px; left: 10px; }
+.hour-9 { top: 50%; left: 5px; transform: translateY(-50%); }
+.hour-10 { top: 50px; left: 10px; }
+.hour-11 { top: 20px; left: 25px; }
+
+/* Minute markers (small dots) */
+.minute-markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.minute-markers::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: var(--radius-circle);
+  /* We'll use JavaScript to create and position these */
+}
+
+/* Clock hands */
+.clock-hands {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hour-hand {
+  width: 6px;
+  height: 60px;
+  background: var(--primary-red);
+  position: absolute;
+  top: -60px;
+  left: -3px;
+  border-radius: 3px 3px 0 0;
+  transform-origin: bottom center;
+  transition: transform var(--transition-slow);
+  z-index: 2;
+}
+
+.minute-hand {
+  width: 4px;
+  height: 80px;
+  background: var(--primary-blue);
+  position: absolute;
+  top: -80px;
+  left: -2px;
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom center;
+  transition: transform var(--transition-slow);
+  z-index: 3;
+}
+
+.clock-center {
+  width: 16px;
+  height: 16px;
+  background: var(--primary-orange);
+  border: 3px solid var(--bg-white);
+  border-radius: var(--radius-circle);
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  z-index: 4;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Interactive states for draggable hands */
+.clock-hands.interactive .hour-hand:hover,
+.clock-hands.interactive .minute-hand:hover {
+  cursor: grab;
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.clock-hands.interactive .hour-hand:active,
+.clock-hands.interactive .minute-hand:active {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+/* ===================================
+   DIGITAL CLOCK COMPONENT
+   =================================== */
+
+.digital-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, var(--text-primary), #34495e);
+  color: var(--primary-green);
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-xxl);
+  font-weight: bold;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 3px solid var(--primary-blue);
+  margin: var(--spacing-lg) auto;
+  min-width: 200px;
+  text-shadow: 0 0 10px var(--primary-green);
+}
+
+.time-display {
+  margin-right: var(--spacing-sm);
+}
+
+.am-pm {
+  font-size: var(--font-lg);
+  opacity: 0.8;
+}
+
+/* Blinking colon animation */
+.time-display:after {
+  content: ':';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+/* ===================================
+   MODE HEADERS
+   Headers for different game modes
+   =================================== */
+
+.mode-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-white);
+  border-bottom: 3px solid var(--primary-blue);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.mode-header h2 {
+  font-size: var(--font-xl);
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.back-button {
+  background: var(--primary-blue);
+  color: var(--text-white);
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.back-button:hover {
+  background: #3a7bc8;
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: translateX(0);
+  box-shadow: none;
+}
+
+/* ===================================
+   PROGRESS INDICATORS
+   =================================== */
+
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.score-display {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-size: var(--font-md);
+  font-weight: bold;
+}
+
+.score-display span {
+  color: var(--text-primary);
+}
+
+.game-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-sm);
+  font-weight: bold;
+}
+
+.game-stats span {
+  background: var(--bg-light);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary-blue);
+}
+
+/* ===================================
+   CONTROL BUTTONS
+   Various buttons throughout the app
+   =================================== */
+
+.control-button {
+  background: var(--primary-green);
+  color: var(--text-white);
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.control-button:hover {
+  background: #6bc442;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.control-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.control-button.primary {
+  background: var(--primary-orange);
+}
+
+.control-button.primary:hover {
+  background: #e6941f;
+}
+
+.control-button:disabled {
+  background: var(--text-secondary);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.tutorial-controls {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  background: var(--bg-light);
+  border-top: 2px solid var(--primary-blue);
+}
+
+/* ===================================
+   CONTENT AREAS
+   Main content sections for different modes
+   =================================== */
+
+.tutorial-content,
+.practice-content,
+.game-content,
+.settings-content {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  background: var(--bg-light);
+}
+
+.lesson-area {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--primary-blue);
+}
+
+.interactive-clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--primary-green);
+}
+
+.question-area {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--primary-orange);
+  text-align: center;
+}
+
+.question-area h3 {
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.answer-feedback {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-weight: bold;
+  transition: all var(--transition-normal);
+}
+
+.answer-feedback.correct {
+  background: #d4edda;
+  color: var(--text-success);
+  border: 2px solid var(--text-success);
+}
+
+.answer-feedback.incorrect {
+  background: #f8d7da;
+  color: var(--text-error);
+  border: 2px solid var(--text-error);
+}
+
+.answer-feedback.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ===================================
+   SETTINGS COMPONENTS
+   =================================== */
+
+.setting-group {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--primary-purple);
+}
+
+.setting-group h3 {
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item span:first-child {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+/* Toggle Switch */
+.setting-item input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  width: 50px;
+  height: 26px;
+  background: #ccc;
+  border-radius: 26px;
+  position: relative;
+  transition: background var(--transition-normal);
+}
+
+.toggle-slider:before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition-normal);
+}
+
+.setting-item input[type="checkbox"]:checked + .toggle-slider {
+  background: var(--primary-green);
+}
+
+.setting-item input[type="checkbox"]:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+/* Select Dropdowns */
+.setting-item select {
+  background: var(--bg-light);
+  border: 2px solid var(--primary-blue);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.setting-item select:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.3);
+}
+
+/* ===================================
+   PROFILE MANAGEMENT
+   =================================== */
+
+.profile-management {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.profile-button {
+  background: var(--primary-blue);
+  color: var(--text-white);
+  border: none;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-button:hover {
+  background: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-light);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--primary-blue);
+}
+
+.profile-name {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.profile-stats {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+/* ===================================
+   RESPONSIVE ADJUSTMENTS FOR COMPONENTS
+   =================================== */
+
+@media (max-width: 768px) {
+  .clock-face {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .hour-hand {
+    height: 50px;
+    top: -50px;
+  }
+  
+  .minute-hand {
+    height: 65px;
+    top: -65px;
+  }
+  
+  .digital-clock {
+    font-size: var(--font-xl);
+    padding: var(--spacing-sm) var(--spacing-lg);
+  }
+  
+  .mode-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .mode-header h2 {
+    font-size: var(--font-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .clock-face {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .marker {
+    width: 25px;
+    height: 25px;
+    font-size: var(--font-md);
+  }
+  
+  .digital-clock {
+    font-size: var(--font-lg);
+    min-width: 150px;
+  }
+  
+  .tutorial-controls {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .score-display,
+  .game-stats {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    text-align: center;
+  }
+}

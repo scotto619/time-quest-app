@@ -1,0 +1,537 @@
+/* ===================================
+   TIME QUEST - MAIN CSS STYLES
+   Foundation styles, layout, and themes
+   =================================== */
+
+/* ===================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   These are like a color palette - define once, use everywhere
+   =================================== */
+
+:root {
+  /* Primary Colors - Bright and Kid-Friendly */
+  --primary-blue: #4A90E2;
+  --primary-green: #7ED321;
+  --primary-orange: #F5A623;
+  --primary-red: #D0021B;
+  --primary-purple: #9013FE;
+  
+  /* Background Colors */
+  --bg-main: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-light: #F8F9FA;
+  --bg-white: #FFFFFF;
+  --bg-dark: #2C3E50;
+  
+  /* Text Colors */
+  --text-primary: #2C3E50;
+  --text-secondary: #7F8C8D;
+  --text-white: #FFFFFF;
+  --text-success: #27AE60;
+  --text-warning: #F39C12;
+  --text-error: #E74C3C;
+  
+  /* Spacing - Like measuring tape for consistent distances */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  /* Font Sizes */
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-md: 16px;
+  --font-lg: 18px;
+  --font-xl: 24px;
+  --font-xxl: 32px;
+  --font-xxxl: 48px;
+  
+  /* Border Radius - How rounded corners are */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-circle: 50%;
+  
+  /* Shadows - For depth and "floating" effects */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+  --shadow-xl: 0 12px 24px rgba(0,0,0,0.25);
+  
+  /* Transitions - How smooth animations feel */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ===================================
+   RESET & BASE STYLES
+   Clear browser defaults and set foundation
+   =================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Makes sizing more predictable */
+}
+
+html {
+  font-size: 16px; /* Base font size */
+  scroll-behavior: smooth; /* Smooth scrolling */
+}
+
+body {
+  font-family: 'Comic Sans MS', 'Trebuchet MS', cursive, sans-serif;
+  font-size: var(--font-md);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-main);
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  position: relative;
+}
+
+/* ===================================
+   ACCESSIBILITY IMPROVEMENTS
+   Make sure everyone can use the app
+   =================================== */
+
+/* Focus indicators for keyboard navigation */
+button:focus,
+input:focus,
+select:focus {
+  outline: 3px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+/* Screen reader friendly content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===================================
+   LAYOUT SYSTEM
+   How screens and sections are organized
+   =================================== */
+
+.screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all var(--transition-normal);
+  z-index: 1;
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  z-index: 10;
+}
+
+/* Container for centering content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  width: 100%;
+}
+
+/* ===================================
+   LOADING SCREEN STYLES
+   =================================== */
+
+#loading-screen {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.loading-content {
+  text-align: center;
+  color: var(--text-white);
+}
+
+.spinning-clock {
+  font-size: var(--font-xxxl);
+  animation: spin 2s linear infinite;
+  margin-bottom: var(--spacing-lg);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-content h2 {
+  font-size: var(--font-xxl);
+  margin-bottom: var(--spacing-xl);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.progress-bar {
+  width: 300px;
+  height: 8px;
+  background: rgba(255,255,255,0.3);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary-green);
+  width: 0%;
+  animation: fillProgress 3s ease-out forwards;
+}
+
+@keyframes fillProgress {
+  to { width: 100%; }
+}
+
+/* ===================================
+   MAIN MENU STYLES
+   =================================== */
+
+#main-menu {
+  background: var(--bg-main);
+  justify-content: space-between;
+  padding: var(--spacing-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-element {
+  position: absolute;
+  font-size: var(--font-xl);
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  animation-delay: 1.5s;
+}
+
+.floating-element:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+  animation-delay: 3s;
+}
+
+.floating-element:nth-child(4) {
+  top: 40%;
+  right: 30%;
+  animation-delay: 4.5s;
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  50% { 
+    transform: translateY(-20px) rotate(180deg); 
+  }
+}
+
+.game-header {
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+.logo-container {
+  margin-bottom: var(--spacing-xl);
+}
+
+.animated-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.animated-logo h1 {
+  font-size: var(--font-xxxl);
+  color: var(--text-white);
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+  margin: 0;
+  font-weight: bold;
+}
+
+.tagline {
+  font-size: var(--font-lg);
+  color: rgba(255,255,255,0.9);
+  margin: var(--spacing-sm) 0 0 0;
+  font-style: italic;
+}
+
+/* ===================================
+   NAVIGATION BUTTONS
+   =================================== */
+
+.main-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  max-width: 400px;
+  margin: 0 auto;
+  z-index: 2;
+  position: relative;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-lg);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.nav-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.primary-button {
+  background: linear-gradient(45deg, var(--primary-orange), var(--primary-red));
+  color: var(--text-white);
+}
+
+.primary-button:hover {
+  background: linear-gradient(45deg, #FF8C00, #FF4500);
+}
+
+.secondary-button {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  border: 2px solid var(--primary-blue);
+}
+
+.secondary-button:hover {
+  background: var(--primary-blue);
+  color: var(--text-white);
+}
+
+.button-icon {
+  font-size: var(--font-xl);
+}
+
+.button-text {
+  font-family: inherit;
+}
+
+/* ===================================
+   MASCOT CHARACTER
+   =================================== */
+
+.mascot-container {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: 50;
+}
+
+.mascot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mascot-body {
+  font-size: var(--font-xxxl);
+  cursor: pointer;
+  transition: transform var(--transition-normal);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.mascot-body:hover {
+  transform: scale(1.1);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.speech-bubble {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: var(--bg-white);
+  color: var(--text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-width: 200px;
+  font-size: var(--font-sm);
+  margin-bottom: var(--spacing-sm);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all var(--transition-normal);
+  pointer-events: none;
+}
+
+.speech-bubble:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: var(--spacing-md);
+  border: 8px solid transparent;
+  border-top-color: var(--bg-white);
+}
+
+.mascot:hover .speech-bubble {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   Make it work on different screen sizes
+   =================================== */
+
+/* Tablet Styles */
+@media (max-width: 768px) {
+  body {
+    font-size: var(--font-sm);
+  }
+  
+  .animated-logo h1 {
+    font-size: var(--font-xxl);
+  }
+  
+  .nav-button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-md);
+  }
+  
+  .mascot-container {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+  
+  .mascot-body {
+    font-size: var(--font-xxl);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  #main-menu {
+    padding: var(--spacing-lg);
+  }
+  
+  .animated-logo h1 {
+    font-size: var(--font-xl);
+  }
+  
+  .tagline {
+    font-size: var(--font-md);
+  }
+  
+  .nav-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-sm);
+  }
+  
+  .button-icon {
+    font-size: var(--font-lg);
+  }
+  
+  .speech-bubble {
+    max-width: 150px;
+    font-size: var(--font-xs);
+  }
+}
+
+/* ===================================
+   UTILITY CLASSES
+   Quick helper styles
+   =================================== */
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+/* ===================================
+   PRINT STYLES
+   For when teachers want to print progress reports
+   =================================== */
+
+@media print {
+  .screen:not(.active) { display: none; }
+  .mascot-container { display: none; }
+  .nav-button { display: none; }
+  body { background: white; color: black; }
+}

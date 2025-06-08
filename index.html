@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Quest - Learn to Tell Time!</title>
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    
+    <!-- Web App Manifest for PWA support -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/clock-icon.png">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+            <div class="spinning-clock">⏰</div>
+            <h2>Loading Time Quest...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu Screen -->
+    <div id="main-menu" class="screen">
+        <div class="background-animation">
+            <!-- Floating clock elements for visual appeal -->
+            <div class="floating-element">🕐</div>
+            <div class="floating-element">🕓</div>
+            <div class="floating-element">🕖</div>
+            <div class="floating-element">🕘</div>
+        </div>
+        
+        <header class="game-header">
+            <div class="logo-container">
+                <div class="animated-logo">
+                    <div class="clock-face">
+                        <div class="hour-hand"></div>
+                        <div class="minute-hand"></div>
+                        <div class="clock-center"></div>
+                    </div>
+                    <h1>Time Quest</h1>
+                </div>
+                <p class="tagline">Master the Magic of Time!</p>
+            </div>
+        </header>
+
+        <nav class="main-navigation">
+            <button id="start-adventure-btn" class="nav-button primary-button">
+                <span class="button-icon">🚀</span>
+                <span class="button-text">Start Adventure</span>
+            </button>
+            
+            <button id="continue-journey-btn" class="nav-button secondary-button">
+                <span class="button-icon">📖</span>
+                <span class="button-text">Continue Journey</span>
+            </button>
+            
+            <button id="practice-mode-btn" class="nav-button secondary-button">
+                <span class="button-icon">🎯</span>
+                <span class="button-text">Practice Mode</span>
+            </button>
+            
+            <button id="settings-btn" class="nav-button secondary-button">
+                <span class="button-icon">⚙️</span>
+                <span class="button-text">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Character Mascot -->
+        <div class="mascot-container">
+            <div class="mascot" id="time-traveler-tim">
+                <div class="mascot-body">🧙‍♂️</div>
+                <div class="speech-bubble" id="mascot-speech">
+                    Welcome to Time Quest! I'm Tim the Time Traveler. Ready to master the magic of time?
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Mode Screen -->
+    <div id="tutorial-mode" class="screen">
+        <header class="mode-header">
+            <button id="back-to-menu" class="back-button">← Back</button>
+            <h2>📚 Learn with Tim</h2>
+            <div class="progress-indicator">
+                <span id="lesson-progress">Lesson 1 of 8</span>
+            </div>
+        </header>
+        
+        <div class="tutorial-content">
+            <div class="lesson-area" id="lesson-display">
+                <!-- Lesson content will be loaded here -->
+            </div>
+            
+            <div class="interactive-clock-container">
+                <div class="analog-clock" id="tutorial-clock">
+                    <div class="clock-face">
+                        <div class="hour-markers">
+                            <div class="marker hour-12">12</div>
+                            <div class="marker hour-1">1</div>
+                            <div class="marker hour-2">2</div>
+                            <div class="marker hour-3">3</div>
+                            <div class="marker hour-4">4</div>
+                            <div class="marker hour-5">5</div>
+                            <div class="marker hour-6">6</div>
+                            <div class="marker hour-7">7</div>
+                            <div class="marker hour-8">8</div>
+                            <div class="marker hour-9">9</div>
+                            <div class="marker hour-10">10</div>
+                            <div class="marker hour-11">11</div>
+                        </div>
+                        <div class="minute-markers"></div>
+                        <div class="clock-hands">
+                            <div class="hour-hand" id="tutorial-hour-hand"></div>
+                            <div class="minute-hand" id="tutorial-minute-hand"></div>
+                            <div class="clock-center"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="digital-clock" id="tutorial-digital">
+                    <span class="time-display">12:00</span>
+                    <span class="am-pm">PM</span>
+                </div>
+            </div>
+            
+            <div class="tutorial-controls">
+                <button id="prev-lesson" class="control-button">← Previous</button>
+                <button id="next-lesson" class="control-button primary">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practice Mode Screen -->
+    <div id="practice-mode" class="screen">
+        <header class="mode-header">
+            <button id="practice-back-btn" class="back-button">← Back</button>
+            <h2>🎯 Practice Time</h2>
+            <div class="score-display">
+                <span>Score: <span id="practice-score">0</span></span>
+                <span>Streak: <span id="practice-streak">0</span></span>
+            </div>
+        </header>
+        
+        <div class="practice-content">
+            <div class="question-area" id="practice-question">
+                <!-- Practice questions will appear here -->
+            </div>
+            
+            <div class="practice-clocks">
+                <!-- Interactive clocks for practice -->
+            </div>
+            
+            <div class="answer-feedback" id="practice-feedback">
+                <!-- Feedback messages appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Mode Screen -->
+    <div id="game-mode" class="screen">
+        <header class="mode-header">
+            <button id="game-back-btn" class="back-button">← Back</button>
+            <h2>🎮 Time Adventure</h2>
+            <div class="game-stats">
+                <span>Level: <span id="current-level">1</span></span>
+                <span>Lives: <span id="lives-remaining">❤️❤️❤️</span></span>
+                <span>Stars: <span id="stars-collected">⭐ 0</span></span>
+            </div>
+        </header>
+        
+        <div class="game-content">
+            <!-- Game levels and challenges will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings" class="screen">
+        <header class="mode-header">
+            <button id="settings-back-btn" class="back-button">← Back</button>
+            <h2>⚙️ Settings</h2>
+        </header>
+        
+        <div class="settings-content">
+            <div class="setting-group">
+                <h3>🔊 Audio Settings</h3>
+                <label class="setting-item">
+                    <span>Sound Effects</span>
+                    <input type="checkbox" id="sound-effects-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <label class="setting-item">
+                    <span>Background Music</span>
+                    <input type="checkbox" id="background-music-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <label class="setting-item">
+                    <span>Voice Narration</span>
+                    <input type="checkbox" id="voice-narration-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-group">
+                <h3>👁️ Visual Settings</h3>
+                <label class="setting-item">
+                    <span>Text Size</span>
+                    <select id="text-size-select">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </label>
+                <label class="setting-item">
+                    <span>Color Theme</span>
+                    <select id="color-theme-select">
+                        <option value="bright" selected>Bright & Colorful</option>
+                        <option value="soft">Soft & Gentle</option>
+                        <option value="high-contrast">High Contrast</option>
+                    </select>
+                </label>
+            </div>
+            
+            <div class="setting-group">
+                <h3>👤 Player Profiles</h3>
+                <div class="profile-management">
+                    <button id="create-profile-btn" class="profile-button">+ Create New Profile</button>
+                    <div id="profile-list">
+                        <!-- Player profiles will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements (hidden) -->
+    <audio id="background-music" loop>
+        <source src="assets/audio/background-music.mp3" type="audio/mpeg">
+        <source src="assets/audio/background-music.ogg" type="audio/ogg">
+    </audio>
+    
+    <audio id="sound-effects" preload="auto">
+        <source src="assets/audio/sound-effects.mp3" type="audio/mpeg">
+        <source src="assets/audio/sound-effects.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- JavaScript Modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/clockEngine.js"></script>
+    <script src="scripts/gameLogic.js"></script>
+    <script src="scripts/uiHandler.js"></script>
+    <script src="scripts/audioManager.js"></script>
+    <script src="scripts/tutorialManager.js"></script>
+    <script src="scripts/practiceManager.js"></script>
+    <script src="scripts/gameManager.js"></script>
+    <script src="scripts/settingsManager.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
